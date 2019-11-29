@@ -71,9 +71,9 @@ public class SecondActivity extends AppCompatActivity implements SecondContract.
         recyclerView = findViewById(R.id.recyclerView_office);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//        String getTime = getCurrentTime();
-        //임시 시간
-        String getTime = "1100";
+        String getTime = getCurrentTime();
+
+//        String getTime = "1120";     //test시간
         avaibleTimeCheck(getTime);
 
         newgetJsonString(adjustTime);//조정된 시간 넣어주기
@@ -139,20 +139,14 @@ public class SecondActivity extends AppCompatActivity implements SecondContract.
         //15분 단위 처리
         String hourTime = time.substring(0, 2);
         String minuteTime = time.substring(2);
-//        Log.d( TAG,"분단위->"+minuteTime );
         int mTime = Integer.valueOf(minuteTime);
 
-        // 시간 편입시키기
         if (mTime < 29) {
             // x 시 00분에 맞추기
-//            Log.i( TAG,"00분에 맞춤" );
             String preMtime = "00";
             adjustTime = hourTime.concat(preMtime);
-//            Log.d( TAG,"조정된 시간:"+adjustTime );
 
         } else if (30 <= mTime && mTime < 59) {
-            // x 시 30분에 맞추기
-//            Log.i( TAG,"30분에 맞춤" );
             String preMtime = "30";
             adjustTime = hourTime.concat(preMtime);
 //            Log.d( TAG,"조정된 시간:"+adjustTime );
