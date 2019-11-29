@@ -1,4 +1,6 @@
 package cosmic.com.pkwprj.presenter;
 
-public class MainPresenter {
+import cosmic.com.pkwprj.contract.MainContract;
+
+public class MainPresenter implements MainContract.presenter {
 }

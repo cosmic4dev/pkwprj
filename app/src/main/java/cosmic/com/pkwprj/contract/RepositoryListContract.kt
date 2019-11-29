@@ -1,4 +1,6 @@
-package cosmic.com.pkwprjjava
+package cosmic.com.pkwprj.contract
+
+import cosmic.com.pkwprj.model.GitHubService
 
 /**
  * 각자의 역할이 가진 Contract(계약)를 정의해 둘 인터페이스
@@ -22,9 +24,10 @@ interface RepositoryListContract {
      * MVP의 Presenter가 구현할 인터페이스
      * View를 클릭했을 때 등 View가 Presenter에 알릴 때 이용한다
      */
-    interface UserActions {
+    interface Presenter {
         fun selectLanguage(language: String)
         fun selectRepositoryItem(item: GitHubService.RepositoryItem)
+        fun getJsonData(name:String)
     }
 
 }

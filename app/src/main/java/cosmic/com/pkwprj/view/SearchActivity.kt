@@ -1,30 +1,30 @@
 package cosmic.com.pkwprj.view
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import cosmic.com.pkwprj.R
-import kotlinx.android.synthetic.main.fragment_search.*
+import cosmic.com.pkwprj.adapter.MyPagerAdapter
+import kotlinx.android.synthetic.main.activity_search.*
 
-class Main2Activity: AppCompatActivity() {
+class SearchActivity: AppCompatActivity()  {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.activity_search)
 
-        setupView()
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.viewPager,Fragment_search())
+            .commit()
+
+        val fragmentAdapter= MyPagerAdapter(supportFragmentManager)
+        viewPager.adapter=fragmentAdapter
+
+        tabLayout.setupWithViewPager(viewPager)
+
 
     }
 
-    private fun setupView() {
 
-
-        recyclerView_search.setLayoutManager(LinearLayoutManager(this))
-        val repositoryAdapter = RepositoryAdapter(
-            this as Context,
-            this as RepositoryAdapter.OnRepositoryItemClickListener
-        )
-        recyclerView_search.setAdapter(repositoryAdapter)
-    }
 }

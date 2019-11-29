@@ -1,4 +1,6 @@
-package cosmic.com.pkwprjjava
+package cosmic.com.pkwprj.contract
+
+import cosmic.com.pkwprj.model.GitHubService
 
 /**
  * 각각 역할을 가진 Contract(계약)를 정의해두는 인터페이스

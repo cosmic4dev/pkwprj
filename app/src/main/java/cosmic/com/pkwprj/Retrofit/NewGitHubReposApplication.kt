@@ -1,4 +1,4 @@
-package cosmic.com.pkwprj.view
+package cosmic.com.pkwprj.Retrofit
 
 import android.app.Application
 import cosmic.com.pkwprj.model.GitHubService

@@ -1,4 +1,4 @@
-package cosmic.com.progressbartest;
+package cosmic.com.pkwprj.model;
 
 import java.util.ArrayList;
 
