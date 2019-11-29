@@ -26,7 +26,6 @@ public class ProgressDrawable extends Drawable {
     private final String OffBookColor="#e8e8e8";
     private final Paint mPaint = new Paint();
     private final RectF mSegment = new RectF();
-    //막대기
     private  Rect mSegmentEx=new Rect();
 
     private  HashMap map;
@@ -52,7 +51,6 @@ public class ProgressDrawable extends Drawable {
 
         //막대기
         mSegmentEx = new Rect();
-        // View의 사이즈 만큼 Rect를 그려 준다.
 //        mSegmentEx.set(0,10,10,0);
 
         Paint paint = new Paint();
@@ -93,9 +91,6 @@ public class ProgressDrawable extends Drawable {
 
                mSegment.offset( mSegment.width() + gapWidth, 0 );
             }
-
-//            }
-
 
     }
 

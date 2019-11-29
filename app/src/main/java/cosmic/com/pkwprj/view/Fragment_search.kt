@@ -12,6 +12,7 @@ import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.model.GithubOwner
+import cosmic.com.pkwprj.presenter.MainPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -26,9 +27,12 @@ class Fragment_search: Fragment() {
 
     lateinit var searchUserName:String
 
+     var mainPresenter:MainPresenter?=null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
+
 
 //        listAdapter= SearchListAdapter(requireContext(),dataList)
         recyclerView=rootView.findViewById(R.id.recyclerView_search1)
@@ -43,17 +47,14 @@ class Fragment_search: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("TAG","온뷰크레이트 통")
 
         searchBtn.setOnClickListener {
             searchUserName=inputText.text.toString()
             searchData(searchUserName)
-
-
         }
 
         delButton.setOnClickListener{
-            var searchUserName=inputText.text.clear()
+            inputText.text.clear()
         }
 
 
@@ -66,9 +67,11 @@ class Fragment_search: Fragment() {
 
          val disposable = GithubClient().getApi().getOwners(searchUserName)
              .subscribeOn(Schedulers.io())
-             .map { data-> listOf(data) }//주요
              .observeOn(AndroidSchedulers.mainThread())
-             .subscribe{data->displaydata(data) }
+             .map { data-> listOf(data) }
+             .subscribe({data->displaydata(data)})
+
+        //추후 에러 핸들리해야함.
     }
 
      fun displaydata(items: List<GithubOwner>) {
@@ -78,7 +81,7 @@ class Fragment_search: Fragment() {
 
     private fun sendToAdapter(dataList: List<GithubOwner>?) {
         Log.d("TAG","확인리스트:->"+dataList)
-        var temList=dataList
+//        var temList=dataList
 
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager

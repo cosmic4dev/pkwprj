@@ -23,10 +23,12 @@ import java.util.List;
 
 import cosmic.com.pkwprj.R;
 import cosmic.com.pkwprj.adapter.ProgressAdapter;
+import cosmic.com.pkwprj.contract.SecondContract;
 import cosmic.com.pkwprj.model.Office;
 import cosmic.com.pkwprj.model.OfficeList;
+import cosmic.com.pkwprj.presenter.SecondPresenter;
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity extends AppCompatActivity implements SecondContract.View {
 
     final static String TAG = "Main";
 
@@ -36,13 +38,12 @@ public class SecondActivity extends AppCompatActivity {
     ArrayList<Office> list;
 
     RecyclerView recyclerView;
-    String recomTime;
+    String adjustTime;
 
     HashMap<String, Integer> map;
     ArrayList<Drawable> drawables;
 
-//    static Drawable d;
-
+    SecondPresenter secondPresenter;
     static int convertedKey;
     TextView tv_office1, tv_office2, tv_office3;
 
@@ -53,6 +54,9 @@ public class SecondActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+
+        secondPresenter = new SecondPresenter(this);
 
         map = new HashMap<>();
         drawables = new ArrayList<>();
@@ -67,17 +71,17 @@ public class SecondActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView_office);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//                String getTime=getCurrentTime();
+//        String getTime = getCurrentTime();
         //임시 시간
         String getTime = "1100";
         avaibleTimeCheck(getTime);
 
-        newgetJsonString(recomTime);//조정된 시간 넣어주기
-        showOfficeTimeTable(recomTime);
+        newgetJsonString(adjustTime);//조정된 시간 넣어주기
+        showOfficeTimeTable(adjustTime);
 
     }
 
-    private void showOfficeTimeTable(String recomTime) {
+    private void showOfficeTimeTable(String adjustTime) {
         for (int i = 0; i < list.size(); i++) {
             Office office = list.get(i);
             String name = office.getName();
@@ -90,7 +94,7 @@ public class SecondActivity extends AppCompatActivity {
                 String startTime = reservationStaus.getStartTime();
 
                 int compare1 = Integer.valueOf(startTime);
-                int compare2 = Integer.valueOf(recomTime);
+                int compare2 = Integer.valueOf(adjustTime);
                 if (compare1 >= compare2) {
 
                     if (compare1 == compare2) {
@@ -102,9 +106,10 @@ public class SecondActivity extends AppCompatActivity {
                     Log.d(TAG, "location->" + location);
                     Log.d(TAG, "reser start to end=" + startTime + "~" + endTime);
 
-                    int a = processConvert1(startTime);
-                    int b = processConvert2(endTime);
-
+//                    int a = processConvert1(startTime);
+//                    int b = processConvert2(endTime);
+                    int a = secondPresenter.processConvert1(startTime);
+                    int b = secondPresenter.processConvert2(endTime);
                     MakeMapData(a, b, name);
                 }
             }
@@ -112,7 +117,7 @@ public class SecondActivity extends AppCompatActivity {
 
     }
 
-    private void nonShowTopOfficeList(String officename) {
+    private void nonShowTopOfficeList(String officename) { //이안에서 현재 시간 아닌거 필터링해주면
         Log.d(TAG, "현재가능하지않는  오피스이름:" + officename);
 
         switch (officename) {
@@ -122,7 +127,6 @@ public class SecondActivity extends AppCompatActivity {
             case "회의실2":
                 tv_office2.setVisibility(View.GONE);
                 break;
-
             case "회의실3":
                 tv_office3.setVisibility(View.GONE);
                 break;
@@ -143,15 +147,15 @@ public class SecondActivity extends AppCompatActivity {
             // x 시 00분에 맞추기
 //            Log.i( TAG,"00분에 맞춤" );
             String preMtime = "00";
-            recomTime = hourTime.concat(preMtime);
-//            Log.d( TAG,"조정된 시간:"+recomTime );
+            adjustTime = hourTime.concat(preMtime);
+//            Log.d( TAG,"조정된 시간:"+adjustTime );
 
         } else if (30 <= mTime && mTime < 59) {
             // x 시 30분에 맞추기
 //            Log.i( TAG,"30분에 맞춤" );
             String preMtime = "30";
-            recomTime = hourTime.concat(preMtime);
-//            Log.d( TAG,"조정된 시간:"+recomTime );
+            adjustTime = hourTime.concat(preMtime);
+//            Log.d( TAG,"조정된 시간:"+adjustTime );
         }
 
         //int 변환
@@ -191,158 +195,19 @@ public class SecondActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
 
-        int curPoint = processConvert1(time);
-        Log.d(TAG, "커포인트: " + curPoint);// 맞게 가져옴.
-
-
         if (officeList != null) {
-            for (int i = 0; i < officeList.musinsa.size(); i++) {
+            for (int i = 0; i < officeList.getMusinsa().size(); i++) {
 
-                //여기서 두 시간 포인트가 일치하지않으면
-                Office office = officeList.musinsa.get(i);
+                Office office = officeList.getMusinsa().get(i);
                 String name = office.getName();
                 String location = office.getLocation();
                 ArrayList<Office.Reservations> reservations = office.getReservations();
-
-                //드로블 호출하면 들어올거같다
                 Drawable d = new ProgressDrawable(map, name);
-
-
                 list.add(new Office(name, location, reservations, d)); //여기서 두 시간 포인트가 일치하지않으면 list에 못담
             }
         }
 
         return list;
-    }
-
-    private int processConvert2(String et) {
-        int code2 = 0;
-
-        switch (et) {
-            case "0900":
-                code2 = 0;
-                break;
-            case "0930":
-                code2 = 1;
-                break;
-            case "1000":
-                code2 = 2;
-                break;
-            case "1030":
-                code2 = 3;
-                break;
-            case "1100":
-                code2 = 4;
-                break;
-            case "1130":
-                code2 = 5;
-                break;
-            case "1200":
-                code2 = 6;
-                break;
-            case "1230":
-                code2 = 7;
-                break;
-            case "1300":
-                code2 = 8;
-                break;
-            case "1330":
-                code2 = 9;
-                break;
-            case "1400":
-                code2 = 10;
-                break;
-            case "1430":
-                code2 = 11;
-                break;
-            case "1500":
-                code2 = 12;
-                break;
-            case "1530":
-                code2 = 13;
-                break;
-            case "1600":
-                code2 = 14;
-                break;
-            case "1630":
-                code2 = 15;
-                break;
-            case "1700":
-                code2 = 16;
-                break;
-            case "1730":
-                code2 = 17;
-                break;
-            case "1800":
-                code2 = 18;
-                break;
-        }
-        return code2;
-
-    }
-
-    private int processConvert1(String st) {
-
-        Log.d(TAG, "넘어온st: " + st); //1220이넘어오니 안됨.
-        int code1 = 0;
-
-        switch (st) {
-            case "0900":
-                code1 = 0;
-                break;
-            case "0930":
-                code1 = 1;
-                break;
-            case "1000":
-                code1 = 2;
-                break;
-            case "1030":
-                code1 = 3;
-                break;
-            case "1100":
-                code1 = 4;
-                break;
-            case "1130":
-                code1 = 5;
-                break;
-            case "1200":
-                code1 = 6;
-                break;
-            case "1230":
-                code1 = 7;
-                break;
-            case "1300":
-                code1 = 8;
-                break;
-            case "1330":
-                code1 = 9;
-                break;
-            case "1400":
-                code1 = 10;
-                break;
-            case "1430":
-                code1 = 11;
-                break;
-            case "1500":
-                code1 = 12;
-                break;
-            case "1530":
-                code1 = 13;
-                break;
-            case "1600":
-                code1 = 14;
-                break;
-            case "1630":
-                code1 = 15;
-                break;
-            case "1700":
-                code1 = 16;
-                break;
-            case "1730":
-                code1 = 17;
-                break;
-        }
-        return code1;
     }
 
 
@@ -357,25 +222,23 @@ public class SecondActivity extends AppCompatActivity {
                 for (int i = startPoint; i < endPoint; i++) {
                     inputKey = i + officeName;
                     map.put(inputKey, i);
-
                 }
             }
-
         }
-
-        showAvailableOffice();
-        ProgressAdapter adapter = new ProgressAdapter(this, list);
-        recyclerView.setAdapter(adapter);
-
+        showAvailableOfficeCode();
+        showList();
     }
 
 
-    private void showAvailableOffice() {
+    private void showAvailableOfficeCode() {
 
-        //예약된시간이 담긴.
-        Log.d(TAG, "현재 시간num:: " + recomTime);
-        convertedKey = processConvert1(recomTime);
+        Log.d(TAG, "현재 시간num:: " + adjustTime);
+        convertedKey = secondPresenter.processConvert1(adjustTime);
         Log.d(TAG, "변환된시간코드:" + convertedKey);
+    }
 
+    private void showList() {
+        ProgressAdapter adapter = new ProgressAdapter(this, list);
+        recyclerView.setAdapter(adapter);
     }
 }
