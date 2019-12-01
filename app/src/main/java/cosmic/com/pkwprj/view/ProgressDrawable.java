@@ -10,7 +10,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,13 +26,8 @@ public class ProgressDrawable extends Drawable {
     private final Paint mPaint = new Paint();
     private final RectF mSegment = new RectF();
     private  Rect mSegmentEx=new Rect();
-
     private  HashMap map;
     private String officeName;
-    private ArrayList<Integer> rList;
-
-    int cTimePoint;
-
 
     public ProgressDrawable(HashMap map,String officeName) {
         this.map=map;
@@ -49,15 +43,12 @@ public class ProgressDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
 
-        //막대기
         mSegmentEx = new Rect();
-//        mSegmentEx.set(0,10,10,0);
 
         Paint paint = new Paint();
 
         canvas.drawRect(mSegmentEx, paint);
 
-        //
         Set set=map.keySet();
         Iterator iterator=set.iterator();
 

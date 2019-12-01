@@ -18,10 +18,7 @@ import cosmic.com.pkwprj.model.Office;
 
 public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHolder> {
 
-    final String TAG = "아답터";
     Context context;
-//    List<Drawable> drawables; //3개담아와야한다.
-//    Drawable drawable;
     Office office;
     ArrayList<Office> lists;
 

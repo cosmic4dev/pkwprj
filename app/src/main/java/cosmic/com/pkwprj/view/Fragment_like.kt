@@ -1,8 +1,6 @@
 package cosmic.com.pkwprj.view
 
-import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +12,7 @@ import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.adapter.DataAdapter2
 import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.model.DbHelper
+import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.model.GithubOwner
 import cosmic.com.pkwprj.presenter.MainPresenter
 
@@ -22,8 +21,6 @@ class Fragment_like: Fragment(),MainContract.view {
 
     internal lateinit var recyclerView: RecyclerView
     internal var dataList: List<GithubOwner> ?=null
-    internal var TAG:String="라이크프래그먼"
-
     var presenter: MainPresenter?=null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +46,6 @@ class Fragment_like: Fragment(),MainContract.view {
 
         for(item in dbHelper.dataList) {
             temList.add(item)
-            Log.d(TAG,"item 확인:->"+item.login)
         }
 
         val adapter = DataAdapter2(context!!,temList)
@@ -57,20 +53,11 @@ class Fragment_like: Fragment(),MainContract.view {
 
     }
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-    }
-
-
-
-    private fun sendToAdapter(dataList: List<GithubOwner>?) {
-        Log.d("TAG","확인리스트:->"+dataList)
+    private fun sendToAdapter(gitHubResult: GitHubResult) {
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager
-        val adapter = DataAdapter(context!!,dataList!!)
-//        val adapter = DataAdapter( context)
+        val adapter = DataAdapter(context!!,gitHubResult!!)
         recyclerView.adapter = adapter
-//        adapter.setOnClickListener(this)
 
     }
 

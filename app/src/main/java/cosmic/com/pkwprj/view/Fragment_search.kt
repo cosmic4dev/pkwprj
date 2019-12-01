@@ -1,7 +1,6 @@
 package cosmic.com.pkwprj.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
-import cosmic.com.pkwprj.model.GithubOwner
+import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.presenter.MainPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -19,11 +18,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 class Fragment_search: Fragment() {
 
-
-    //    internal lateinit var listAdapter:SearchListAdapter
     internal lateinit var recyclerView: RecyclerView
-
-    var dataList:List<GithubOwner>?=null
 
     lateinit var searchUserName:String
 
@@ -33,16 +28,11 @@ class Fragment_search: Fragment() {
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
 
-
-//        listAdapter= SearchListAdapter(requireContext(),dataList)
         recyclerView=rootView.findViewById(R.id.recyclerView_search1)
         val layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
         recyclerView.layoutManager=layoutManager
-//        recyclerView.adapter=listAdapter
-
 
         return rootView
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +47,6 @@ class Fragment_search: Fragment() {
             inputText.text.clear()
         }
 
-
     }
 
 
@@ -65,27 +54,22 @@ class Fragment_search: Fragment() {
 
     fun searchData(searchUserName:String){
 
-         val disposable = GithubClient().getApi().getOwners(searchUserName)
+        val disposable = GithubClient().getApi().getUserInfo(searchUserName)
              .subscribeOn(Schedulers.io())
              .observeOn(AndroidSchedulers.mainThread())
-             .map { data-> listOf(data) }
-             .subscribe({data->displaydata(data)})
+             .subscribe({
+                        data->sendToAdapter(data)
+             },{ error->
+                 error.printStackTrace()
+             })
 
-        //추후 에러 핸들리해야함.
     }
 
-     fun displaydata(items: List<GithubOwner>) {
-        sendToAdapter(items)
-    }
 
-
-    private fun sendToAdapter(dataList: List<GithubOwner>?) {
-        Log.d("TAG","확인리스트:->"+dataList)
-//        var temList=dataList
-
+    private fun sendToAdapter(dataList: GitHubResult) {
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager
-        val adapter = DataAdapter(context,dataList,searchUserName,true)
+        val adapter = DataAdapter(context,dataList,searchUserName)
 //        val adapter = DataAdapter( context)
         recyclerView.adapter = adapter
 

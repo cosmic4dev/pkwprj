@@ -3,7 +3,6 @@ package cosmic.com.pkwprj.model
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import java.util.*
 
 class DbHelper(
@@ -24,10 +23,11 @@ class DbHelper(
             if (cursor.moveToNext()) {
                 do {
                     val userData = GithubOwner()
-                    userData.login = cursor.getString(1)
+                    userData.login=cursor.getString(1)
                     userData.avatar_url = cursor.getString(2)
                     userData.html_url = cursor.getString(3)
-                    userData.score = cursor.getInt(4)
+                    userData.score = cursor.getFloat(4)
+
 
                     dataList.add(userData)
                 } while (cursor.moveToNext())
@@ -41,18 +41,17 @@ class DbHelper(
 
     override fun onCreate(db: SQLiteDatabase) {
 
-        db.execSQL("CREATE TABLE HUB (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, avatar_url TEXT, html_url TEXT, score INTEGER);")
+        db.execSQL("CREATE TABLE HUB (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT, avatar_url TEXT, html_url TEXT, score FLOAT);")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
 
     }
 
-    fun insert(name: String, url: String, html: String, etc: Int) {
+    fun insert(name: String, url: String, html: String, etc: Float) {
 
         val db = writableDatabase
         db.execSQL("INSERT INTO HUB VALUES(null, '$name', '$url', '$html', '$etc');")
-        Log.d("TAG", "데이터 인서트확인")
     }
 
     fun getData(name: String): String {
