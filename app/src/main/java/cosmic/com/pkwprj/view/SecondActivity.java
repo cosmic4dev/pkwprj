@@ -111,10 +111,6 @@ public class SecondActivity extends AppCompatActivity implements SecondContract.
                     }
                     String endTime = reservationStaus.getEndTime();
 
-                    Log.d(TAG, "name->" + name);
-                    Log.d(TAG, "location->" + location);
-                    Log.d(TAG, "reser start to end=" + startTime + "~" + endTime);
-
                     int a = secondPresenter.processConvert1(startTime);
                     int b = secondPresenter.processConvert2(endTime);
                     MakeMapData(a, b, name);
@@ -206,7 +202,7 @@ public class SecondActivity extends AppCompatActivity implements SecondContract.
                 String location = office.getLocation();
                 ArrayList<Office.Reservations> reservations = office.getReservations();
                 Drawable d = new ProgressDrawable(map, name);
-                list.add(new Office(name, location, reservations, d)); //여기서 두 시간 포인트가 일치하지않으면 list에 못담
+                list.add(new Office(name, location, reservations, d));
             }
         }
 

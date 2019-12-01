@@ -1,12 +1,8 @@
 package cosmic.com.pkwprj.presenter
 
-import android.content.res.AssetManager
-import com.google.gson.Gson
 import cosmic.com.pkwprj.contract.SecondContract
 import cosmic.com.pkwprj.model.Office
 import cosmic.com.pkwprj.model.OfficeList
-import cosmic.com.pkwprj.view.ProgressDrawable
-import java.io.IOException
 import java.util.*
 
 class SecondPresenter(private val secondView:SecondContract.View): SecondContract.Presenter {
@@ -16,37 +12,37 @@ class SecondPresenter(private val secondView:SecondContract.View): SecondContrac
     internal lateinit var list: ArrayList<Office>
     internal lateinit var officeList: OfficeList
 
-     override fun newgetJsonString():ArrayList<Office> {
-
-        list = ArrayList()
-
-        try {
-
-            val assetManager:AssetManager?=null
-            val inputStrem = assetManager?.open("MUSINSA.json")
-            val jsonString=inputStrem?.bufferedReader().use { it?.readText() }
-            val gson = Gson()
-            officeList = gson.fromJson(jsonString, OfficeList::class.java)
-
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        }
-
-        if (officeList != null) {
-
-            for (i in officeList!!.musinsa.indices) {
-
-                val office = officeList!!.musinsa.get(i)
-                val name = office.name
-                val location = office.location
-                val reservations = office.reservations
-                val timeBar = ProgressDrawable(map, name)
-                list.add(Office(name, location, reservations, timeBar))
-            }
-        }
-
-        return list
-    }
+//     override fun newgetJsonString():ArrayList<Office> {
+//
+//        list = ArrayList()
+//
+//        try {
+//
+//            val assetManager: AssetManager?=null
+//            val inputStrem = assetManager?.open("MUSINSA.json")
+//            val jsonString=inputStrem?.bufferedReader().use { it?.readText() }
+//            val gson = Gson()
+//            officeList = gson.fromJson(jsonString, OfficeList::class.java)
+//
+//        } catch (ex: IOException) {
+//            ex.printStackTrace()
+//        }
+//
+//        if (officeList != null) {
+//
+//            for (i in officeList!!.musinsa.indices) {
+//
+//                val office = officeList!!.musinsa.get(i)
+//                val name = office.name
+//                val location = office.location
+//                val reservations = office.reservations
+//                val timeBar = ProgressDrawable(map, name)
+//                list.add(Office(name, location, reservations, timeBar))
+//            }
+//        }
+//
+//        return list
+//    }
 
     override fun processConvert2(endTime: String): Int {
         var code2 = -1
