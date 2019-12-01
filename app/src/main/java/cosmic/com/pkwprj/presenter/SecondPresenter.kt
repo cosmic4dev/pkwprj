@@ -1,7 +1,6 @@
 package cosmic.com.pkwprj.presenter
 
 import android.content.res.AssetManager
-import android.graphics.drawable.Drawable
 import com.google.gson.Gson
 import cosmic.com.pkwprj.contract.SecondContract
 import cosmic.com.pkwprj.model.Office
@@ -14,28 +13,27 @@ class SecondPresenter(private val secondView:SecondContract.View): SecondContrac
 
 
     internal lateinit var map: HashMap<String, Int>
-    internal lateinit var drawables: ArrayList<Drawable>
-    internal var list: ArrayList<Office>? = null
-    internal var officeList: OfficeList? = null
+    internal lateinit var list: ArrayList<Office>
+    internal lateinit var officeList: OfficeList
 
-     override fun newgetJsonString(time: String) {
+     override fun newgetJsonString():ArrayList<Office> {
 
         list = ArrayList()
 
         try {
+
             val assetManager:AssetManager?=null
             val inputStrem = assetManager?.open("MUSINSA.json")
             val jsonString=inputStrem?.bufferedReader().use { it?.readText() }
             val gson = Gson()
             officeList = gson.fromJson(jsonString, OfficeList::class.java)
+
         } catch (ex: IOException) {
             ex.printStackTrace()
         }
 
-//        val curPoint = processConvert1(time)
-
-
         if (officeList != null) {
+
             for (i in officeList!!.musinsa.indices) {
 
                 val office = officeList!!.musinsa.get(i)
@@ -43,15 +41,15 @@ class SecondPresenter(private val secondView:SecondContract.View): SecondContrac
                 val location = office.location
                 val reservations = office.reservations
                 val timeBar = ProgressDrawable(map, name)
-                list!!.add(Office(name, location, reservations, timeBar)) //여기서 두 시간 포인트가 일치하지않으면 list에 못담
+                list.add(Office(name, location, reservations, timeBar))
             }
         }
 
-        return
+        return list
     }
 
     override fun processConvert2(endTime: String): Int {
-        var code2 = 0
+        var code2 = -1
 
         when (endTime) {
             "0900" -> code2 = 0
@@ -80,7 +78,7 @@ class SecondPresenter(private val secondView:SecondContract.View): SecondContrac
 
     override fun processConvert1(startTime: String): Int {
 
-        var code1 =0
+        var code1 =-1
 
         when (startTime) {
             "0900" -> code1 = 0
@@ -101,6 +99,7 @@ class SecondPresenter(private val secondView:SecondContract.View): SecondContrac
             "1630" -> code1 = 15
             "1700" -> code1 = 16
             "1730" -> code1 = 17
+            "1800" -> code1 = 18
         }
         return code1
     }

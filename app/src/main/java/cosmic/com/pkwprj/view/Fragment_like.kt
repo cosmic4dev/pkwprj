@@ -8,16 +8,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cosmic.com.pkwprj.R
-import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.adapter.DataAdapter2
 import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.model.DbHelper
-import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.model.GithubOwner
 import cosmic.com.pkwprj.presenter.MainPresenter
 
 
 class Fragment_like: Fragment(),MainContract.view {
+    override fun showToast(msg: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun closeKeyboard() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     internal lateinit var recyclerView: RecyclerView
     internal var dataList: List<GithubOwner> ?=null
@@ -52,14 +57,4 @@ class Fragment_like: Fragment(),MainContract.view {
         recyclerView.adapter = adapter
 
     }
-
-    private fun sendToAdapter(gitHubResult: GitHubResult) {
-        val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerView.layoutManager = linearLayoutManager
-        val adapter = DataAdapter(context!!,gitHubResult!!)
-        recyclerView.adapter = adapter
-
-    }
-
-
 }

@@ -1,34 +1,36 @@
 package cosmic.com.pkwprj.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
+import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.model.GitHubResult
-import cosmic.com.pkwprj.presenter.MainPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
 
-class Fragment_search: Fragment() {
+
+class Fragment_search: Fragment(),MainContract.view {
 
     internal lateinit var recyclerView: RecyclerView
 
     lateinit var searchUserName:String
 
-     var mainPresenter:MainPresenter?=null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_search, container, false)
+        val rootView = inflater.inflate(cosmic.com.pkwprj.R.layout.fragment_search, container, false)
 
-        recyclerView=rootView.findViewById(R.id.recyclerView_search1)
+        recyclerView=rootView.findViewById(cosmic.com.pkwprj.R.id.recyclerView_search1)
         val layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
         recyclerView.layoutManager=layoutManager
 
@@ -38,9 +40,20 @@ class Fragment_search: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        inputText?.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchUserName=inputText.text.toString()
+                searchData(searchUserName)
+                true
+            } else {
+                false
+            }
+        }
+
         searchBtn.setOnClickListener {
             searchUserName=inputText.text.toString()
             searchData(searchUserName)
+
         }
 
         delButton.setOnClickListener{
@@ -53,6 +66,12 @@ class Fragment_search: Fragment() {
 
 
     fun searchData(searchUserName:String){
+
+        closeKeyboard()
+
+        if (searchUserName == null) {
+            showToast("검색어를 입력해주세요.")
+        }
 
         val disposable = GithubClient().getApi().getUserInfo(searchUserName)
              .subscribeOn(Schedulers.io())
@@ -70,9 +89,16 @@ class Fragment_search: Fragment() {
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager
         val adapter = DataAdapter(context,dataList,searchUserName)
-//        val adapter = DataAdapter( context)
         recyclerView.adapter = adapter
 
     }
 
+    override fun showToast(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+    }
+
+     override fun closeKeyboard() {
+         val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+         imm.hideSoftInputFromWindow(inputText.getWindowToken(), 0);
+    }
 }

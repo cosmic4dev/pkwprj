@@ -42,7 +42,6 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
 
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
 
-//        user = dataList[position]
         user=gitHubResult.items[position]
         val imageUri = Uri.parse(user.avatar_url)
         Log.d("TAG", "url->$imageUri")
@@ -114,7 +113,6 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
         fun checkLike(userName: String) {
             val dbHelper = DbHelper(context, "HUB.db", null, 1)
             val getdata = dbHelper.getData(userName)
-            Log.i("TAG","디비 호출 유저네임: "+ getdata)
 
             if (getdata == userName) {
                 saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)

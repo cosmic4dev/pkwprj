@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-
         goGitBtn.setOnClickListener {
 
             var intent = Intent(this,SearchActivity::class.java)

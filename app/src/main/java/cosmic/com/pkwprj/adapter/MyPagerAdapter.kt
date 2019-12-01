@@ -8,16 +8,12 @@ import cosmic.com.pkwprj.view.Fragment_search
 
 class MyPagerAdapter:FragmentPagerAdapter {
 
-    // 객체 생성
     var data1 : Fragment = Fragment_search()
     var data2 : Fragment = Fragment_like()
 
     private val tabTitles = arrayOf("Search Tab", "Like Tab")
 
-
-    // 초기화
     var mData : ArrayList<Fragment> = arrayListOf(data1,data2)
-
 
     constructor(fm : FragmentManager) : super(fm){
 

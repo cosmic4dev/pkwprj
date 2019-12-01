@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import cosmic.com.pkwprj.R;
 import cosmic.com.pkwprj.model.Office;
+import cosmic.com.pkwprj.view.SecondActivity;
 
 
 public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHolder> {
@@ -22,13 +23,11 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
     Office office;
     ArrayList<Office> lists;
 
-
     public ProgressAdapter(Context context, ArrayList<Office> list) {
         this.context = context;
         this.lists = list;
 
     }
-
 
     @NonNull
     @Override
@@ -46,6 +45,13 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
         holder.tv_officeName.setText(office.getName());
         holder.tv_location.setText(office.getLocation());
         holder.progressBar3.setProgressDrawable(office.getDrawable());
+
+        if(0<SecondActivity.convertedKey&&SecondActivity.convertedKey<18) {
+            int inputX = (SecondActivity.convertedKey - 1) * 50;
+            holder.tv_current.setX(inputX);
+        }else{
+            holder.tv_current.setText("");
+        }
     }
 
 
@@ -65,6 +71,7 @@ public class ProgressAdapter extends RecyclerView.Adapter<ProgressAdapter.ViewHo
             progressBar3 = itemView.findViewById(R.id.progressBar3);
             tv_officeName = itemView.findViewById(R.id.tv_officeName);
             tv_location = itemView.findViewById(R.id.tv_officeLocation);
+            tv_current=itemView.findViewById(R.id.tv_move);
         }
 
     }

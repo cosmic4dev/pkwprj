@@ -8,11 +8,8 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 
 import static cosmic.com.pkwprj.view.SecondActivity.convertedKey;
 
@@ -21,17 +18,17 @@ public class ProgressDrawable extends Drawable {
     final String TAG = "드러블";
 
     private static final int NUM_SEGMENTS = 18;
-    private final String OnBookColor="#0078ff";
-    private final String OffBookColor="#e8e8e8";
+    private final String OnBookColor = "#0078ff";
+    private final String OffBookColor = "#e8e8e8";
+    private final String vBarColor = "#cccccc";
     private final Paint mPaint = new Paint();
     private final RectF mSegment = new RectF();
-    private  Rect mSegmentEx=new Rect();
-    private  HashMap map;
+    private HashMap map;
     private String officeName;
 
-    public ProgressDrawable(HashMap map,String officeName) {
-        this.map=map;
-        this.officeName=officeName;
+    public ProgressDrawable(HashMap map, String officeName) {
+        this.map = map;
+        this.officeName = officeName;
     }
 
     @Override
@@ -43,45 +40,43 @@ public class ProgressDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
 
-        mSegmentEx = new Rect();
-
-        Paint paint = new Paint();
-
-        canvas.drawRect(mSegmentEx, paint);
-
-        Set set=map.keySet();
-        Iterator iterator=set.iterator();
-
         Rect b = getBounds();
-        float gapWidth=0;
+        float gapWidth = 0;
         float segmentWidth = (b.width() - (NUM_SEGMENTS - 1) * gapWidth) / NUM_SEGMENTS;
-        mSegment.set(0, 0, segmentWidth, b.height());
+        mSegment.set(0, 0, segmentWidth, b.height() * 0.6f);
 
-        for(int i=0; i<NUM_SEGMENTS; i++) {
+        for (int i = 0; i < NUM_SEGMENTS; i++) {
 
-            String makeKey=i+officeName;
-            Log.d(TAG,"스케쥴+오피스네임:"+makeKey);
-            if(map.get(makeKey)!=null){
-                    Log.d( "TAG", "예약됨.:" + i );
-                    mPaint.setColor( Color.parseColor( OffBookColor ) );
+            String makeKey = i + officeName;
 
-                       canvas.drawRect(mSegment.left, mSegment.top, mSegment.right, mSegment.bottom, mPaint);
+            if (map.get(makeKey) != null) {
 
-                } else if(map.get(makeKey )==null&&i>=convertedKey){
-                    Log.d( "TAG", "예약가능포인트.:" + i );
+                mPaint.setColor(Color.parseColor(OffBookColor));
+                canvas.drawRect(mSegment.left, 60, mSegment.right, mSegment.bottom, mPaint);
 
-                    if(convertedKey==i){
-                        Log.d(TAG,"현재시간과 예약가능 중첩포인트: "+i);
-                    }
+            } else if (map.get(makeKey) == null && i >= convertedKey) {
 
-                    mPaint.setColor( Color.parseColor( OnBookColor ) );
-                    canvas.drawRect( mSegment.left, mSegment.top, mSegment.right, mSegment.bottom, mPaint );
-                }else{
-                   mPaint.setColor( Color.parseColor( OffBookColor ) );
-               }
+                mPaint.setColor(Color.parseColor(OnBookColor));
+                canvas.drawRect(mSegment.left, 40, mSegment.right, mSegment.bottom, mPaint);
 
-               mSegment.offset( mSegment.width() + gapWidth, 0 );
+            } else {
+
+                mPaint.setColor(Color.parseColor(OffBookColor));
+                canvas.drawRect(mSegment.left, 60, mSegment.right, mSegment.bottom, mPaint);
+
             }
+
+            if (convertedKey == i) {
+
+                Paint linePaint = new Paint();
+                linePaint.setColor(Color.parseColor(vBarColor));
+                final float lineWidth = 5f;
+                linePaint.setStrokeWidth(lineWidth);
+                canvas.drawLine(mSegment.left, 0, mSegment.left, 60, linePaint);
+            }
+
+            mSegment.offset(mSegment.width() + gapWidth, 0);
+        }
 
     }
 
