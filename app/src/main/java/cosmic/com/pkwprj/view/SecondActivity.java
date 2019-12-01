@@ -1,238 +1,235 @@
-package cosmic.com.pkwprj.view;
+package cosmic.com.pkwprj.view
 
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.WindowManager
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import cosmic.com.pkwprj.R
+import cosmic.com.pkwprj.adapter.ProgressAdapter
+import cosmic.com.pkwprj.contract.SecondContract
+import cosmic.com.pkwprj.model.Office
+import cosmic.com.pkwprj.model.OfficeList
+import cosmic.com.pkwprj.presenter.SecondPresenter
+import java.text.SimpleDateFormat
+import java.util.*
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class SecondActivity : AppCompatActivity(), SecondContract.View {
 
-import com.google.gson.Gson;
+    internal lateinit var progressBar: ProgressBar
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+    internal lateinit var officeList: OfficeList
+    internal lateinit var list: ArrayList<Office>
 
-import cosmic.com.pkwprj.R;
-import cosmic.com.pkwprj.adapter.ProgressAdapter;
-import cosmic.com.pkwprj.contract.SecondContract;
-import cosmic.com.pkwprj.model.Office;
-import cosmic.com.pkwprj.model.OfficeList;
-import cosmic.com.pkwprj.presenter.SecondPresenter;
+    internal lateinit var recyclerView: RecyclerView
+    internal lateinit var adjustTime: String
 
-public class SecondActivity extends AppCompatActivity implements SecondContract.View {
+    internal lateinit var map: HashMap<String, Int>
+    internal lateinit var drawables: ArrayList<Drawable>
 
-    final static String TAG = "Main";
+    internal lateinit var secondPresenter: SecondPresenter
+    internal lateinit var tv_office1: TextView
+    internal lateinit var tv_office2: TextView
+    internal lateinit var tv_office3: TextView
+    internal lateinit var tv_move: TextView
 
-    ProgressBar progressBar;
+    private val currentTime: String
+        get() {
+            val dateFormat = SimpleDateFormat("HHmm")
+            val cTime = System.currentTimeMillis()
 
-    OfficeList officeList;
-    ArrayList<Office> list;
+            return dateFormat.format(cTime)
 
-    RecyclerView recyclerView;
-    String adjustTime;
-
-    HashMap<String, Integer> map;
-    ArrayList<Drawable> drawables;
-
-    SecondPresenter secondPresenter;
-    static int convertedKey;
-    TextView tv_office1, tv_office2, tv_office3;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ui);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
 
-        secondPresenter = new SecondPresenter(this);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_ui)
 
-        map = new HashMap<>();
-        drawables = new ArrayList<>();
-
-        progressBar = findViewById(R.id.progressBar3);
-
-        tv_office1 = findViewById(R.id.tv_office1);
-        tv_office2 = findViewById(R.id.tv_office2);
-        tv_office3 = findViewById(R.id.tv_office3);
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
 
 
-        recyclerView = findViewById(R.id.recyclerView_office);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        secondPresenter = SecondPresenter(this)
 
-        String getTime = getCurrentTime();
+        map = HashMap()
+        drawables = ArrayList()
 
-//        String getTime = "1120";     //test시간
-        avaibleTimeCheck(getTime);
+        progressBar = findViewById(R.id.progressBar3)
 
-        newgetJsonString(adjustTime);//조정된 시간 넣어주기
-        showOfficeTimeTable(adjustTime);
+        tv_office1 = findViewById(R.id.tv_office1)
+        tv_office2 = findViewById(R.id.tv_office2)
+        tv_office3 = findViewById(R.id.tv_office3)
+
+        tv_move = findViewById(R.id.tv_move)
+
+        recyclerView = findViewById(R.id.recyclerView_office)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val getTime = currentTime
+
+        //        String getTime = "1739";     //test시간
+        avaibleTimeCheck(getTime)
+
+                list=secondPresenter.newgetJsonString();//조정된 시간 넣어주기
+//        newgetJsonString()//조정된 시간 넣어주기
+        showOfficeTimeTable(adjustTime)
 
     }
 
-    private void showOfficeTimeTable(String adjustTime) {
-        for (int i = 0; i < list.size(); i++) {
-            Office office = list.get(i);
-            String name = office.getName();
-            String location = office.getLocation();
-            ArrayList<Office.Reservations> reservationList = office.getReservations();
 
-            for (int j = 0; j < reservationList.size(); j++) {
-                Office.Reservations reservationStaus = reservationList.get(j);
+    private fun showOfficeTimeTable(adjustTime: String) {
 
-                String startTime = reservationStaus.getStartTime();
+        for (i in list.indices) {
+            val office = list[i]
+            val name = office.name
+            val location = office.location
+            val reservationList = office.reservations
 
-                int compare1 = Integer.valueOf(startTime);
-                int compare2 = Integer.valueOf(adjustTime);
-                if (compare1 >= compare2) {
+            for (j in reservationList!!.indices) {
+                val reservationStaus = reservationList[j]
+
+                val startTime = reservationStaus.startTime
+
+                val compare1 = Integer.valueOf(startTime!!)
+                val compare2 = Integer.valueOf(adjustTime)
+
+                if (compare1 >= compare2 || compare1 == 1700 && compare2 < 1800) {
 
                     if (compare1 == compare2) {
-                        nonShowTopOfficeList(name);
+                        nonShowTopOfficeList(name!!)
+                    } else if (compare1 == 1700 && compare2 == 1730) {
+                        nonShowTopOfficeList(name!!)
                     }
-                    String endTime = reservationStaus.getEndTime();
+                    val endTime = reservationStaus.endTime
 
-                    Log.d(TAG, "name->" + name);
-                    Log.d(TAG, "location->" + location);
-                    Log.d(TAG, "reser start to end=" + startTime + "~" + endTime);
+                    Log.d(TAG, "name->" + name!!)
+                    Log.d(TAG, "location->" + location!!)
+                    Log.d(TAG, "reser start to end=$startTime~$endTime")
 
-//                    int a = processConvert1(startTime);
-//                    int b = processConvert2(endTime);
-                    int a = secondPresenter.processConvert1(startTime);
-                    int b = secondPresenter.processConvert2(endTime);
-                    MakeMapData(a, b, name);
+                    val a = secondPresenter.processConvert1(startTime)
+                    val b = secondPresenter.processConvert2(endTime!!)
+                    MakeMapData(a, b, name)
+                } else if (compare2 >= 1800) {
+                    tv_office1.visibility = View.GONE
+                    tv_office2.visibility = View.GONE
+                    tv_office3.visibility = View.GONE
                 }
             }
         }
 
     }
 
-    private void nonShowTopOfficeList(String officename) { //이안에서 현재 시간 아닌거 필터링해주면
-        Log.d(TAG, "현재가능하지않는  오피스이름:" + officename);
+    private fun nonShowTopOfficeList(officename: String) {
 
-        switch (officename) {
-            case "대회의실1":
-                tv_office1.setVisibility(View.GONE);
-                break;
-            case "회의실2":
-                tv_office2.setVisibility(View.GONE);
-                break;
-            case "회의실3":
-                tv_office3.setVisibility(View.GONE);
-                break;
+        when (officename) {
+            "대회의실1" -> tv_office1.visibility = View.GONE
+            "회의실2" -> tv_office2.visibility = View.GONE
+            "회의실3" -> tv_office3.visibility = View.GONE
         }
 
     }
 
 
-    private void avaibleTimeCheck(String time) {
-        //15분 단위 처리
-        String hourTime = time.substring(0, 2);
-        String minuteTime = time.substring(2);
-        int mTime = Integer.valueOf(minuteTime);
+    private fun avaibleTimeCheck(time: String) {
 
-        if (mTime < 29) {
-            // x 시 00분에 맞추기
-            String preMtime = "00";
-            adjustTime = hourTime.concat(preMtime);
+        val hourTime = time.substring(0, 2)
+        val minuteTime = time.substring(2)
+        val mTime = Integer.valueOf(minuteTime)
 
-        } else if (30 <= mTime && mTime < 59) {
-            String preMtime = "30";
-            adjustTime = hourTime.concat(preMtime);
-//            Log.d( TAG,"조정된 시간:"+adjustTime );
+        if (mTime < 30) {
+            val preMtime = "00"
+            adjustTime = hourTime + preMtime
+
+        } else if (30 <= mTime && mTime <= 59) {
+            val preMtime = "30"
+            adjustTime = hourTime + preMtime
+
         }
 
-        //int 변환
-        int TimeConvertToInt = Integer.valueOf(time);
+        val TimeConvertToInt = Integer.valueOf(time)
         if (TimeConvertToInt < 900) {
-//            Log.d( TAG,"아직개업전" );
-        } else if (900 <= TimeConvertToInt && TimeConvertToInt <= 1800) {
-//            Log.d( TAG,"영업중" );
+            Log.d(TAG, "아직개업전")
+        } else if (900 <= TimeConvertToInt && TimeConvertToInt < 1800) {
+            Log.d(TAG, "영업중")
         } else {
-//            Log.d( TAG,"영업마감" );
+            Log.d(TAG, "영업마감")
         }
-    }
-
-    private String getCurrentTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HHmm");
-        long cTime = System.currentTimeMillis();
-        String time = dateFormat.format(cTime);
-        Log.d(TAG, "현재시간:" + time);
-
-        return time;
 
     }
 
-    private List newgetJsonString(String time) {
+//    private fun newgetJsonString(): List<*> {
+//
+//        list = ArrayList()
+//
+//        try {
+//            val `is` = assets.open("MUSINSA.json")
+//            val buffer = ByteArray(`is`.available())
+//            `is`.read(buffer)
+//            `is`.close()
+//            val json = String(buffer, "UTF-8")
+//            val gson = Gson()
+//            officeList = gson.fromJson(json, OfficeList::class.java)
+//        } catch (ex: IOException) {
+//            ex.printStackTrace()
+//        }
+//
+//        if (officeList != null) {
+//            for (i in 0 until officeList!!.musinsa.size) {
+//
+//                val office = officeList!!.musinsa[i]
+//                val name = office.name
+//                val location = office.location
+//                val reservations = office.reservations
+//                val d = ProgressDrawable(map, name)
+//                list.add(Office(name, location, reservations, d)) //여기서 두 시간 포인트가 일치하지않으면 list에 못담
+//            }
+//        }
+//
+//        return list
+//    }
 
-        list = new ArrayList<>();
 
-        try {
-            InputStream is = getAssets().open("MUSINSA.json");
-            byte[] buffer = new byte[is.available()];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, "UTF-8");
-            Gson gson = new Gson();
-            officeList = gson.fromJson(json, OfficeList.class);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        if (officeList != null) {
-            for (int i = 0; i < officeList.getMusinsa().size(); i++) {
-
-                Office office = officeList.getMusinsa().get(i);
-                String name = office.getName();
-                String location = office.getLocation();
-                ArrayList<Office.Reservations> reservations = office.getReservations();
-                Drawable d = new ProgressDrawable(map, name);
-                list.add(new Office(name, location, reservations, d)); //여기서 두 시간 포인트가 일치하지않으면 list에 못담
-            }
-        }
-
-        return list;
-    }
-
-
-    private void MakeMapData(int startPoint, int endPoint, String officeName) {
-        Log.d(TAG, "들어온 a&b=>" + officeName + ": " + startPoint + ", " + endPoint);
-        String inputKey;
-        for (int l = 0; l < list.size(); l++) {
+    private fun MakeMapData(startPoint: Int, endPoint: Int, officeName: String) {
+        var inputKey: String
+        for (l in list.indices) {
             if (endPoint - startPoint == 1) {
-                inputKey = l + officeName;
-                map.put(inputKey, startPoint);
+                inputKey = l.toString() + officeName
+                map[inputKey] = startPoint
             } else if (endPoint - startPoint > 1) {
-                for (int i = startPoint; i < endPoint; i++) {
-                    inputKey = i + officeName;
-                    map.put(inputKey, i);
+                for (i in startPoint until endPoint) {
+                    inputKey = i.toString() + officeName
+                    map[inputKey] = i
                 }
             }
         }
-        showAvailableOfficeCode();
-        showList();
+        showAvailableOfficeCode()
+        showList()
     }
 
+    private fun showAvailableOfficeCode() {
 
-    private void showAvailableOfficeCode() {
+        convertedKey = secondPresenter.processConvert1(adjustTime)
 
-        Log.d(TAG, "현재 시간num:: " + adjustTime);
-        convertedKey = secondPresenter.processConvert1(adjustTime);
-        Log.d(TAG, "변환된시간코드:" + convertedKey);
     }
 
-    private void showList() {
-        ProgressAdapter adapter = new ProgressAdapter(this, list);
-        recyclerView.setAdapter(adapter);
+    private fun showList() {
+
+        val adapter = ProgressAdapter(this, list)
+        recyclerView.adapter = adapter
+    }
+
+    companion object {
+
+        internal val TAG = "Main"
+        var convertedKey: Int = 0
     }
 }
