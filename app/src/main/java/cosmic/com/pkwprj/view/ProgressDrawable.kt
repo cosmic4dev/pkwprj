@@ -2,10 +2,10 @@ package cosmic.com.pkwprj.view
 
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import cosmic.com.pkwprj.view.SecondActivity.convertedKey
+import cosmic.com.pkwprj.view.SecondActivity.Companion.convertedKey
 import java.util.*
 
-class ProgressDrawable(private val map: HashMap<*, *>, private val officeName: String) :
+class ProgressDrawable(private val map: HashMap<*, *>, private val officeName: String?) :
     Drawable() {
 
     private val OnBookColor = "#0078ff"
