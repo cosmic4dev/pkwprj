@@ -1,5 +1,6 @@
 package cosmic.com.pkwprj.view
 
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +9,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.adapter.ProgressAdapter
 import cosmic.com.pkwprj.contract.SecondContract
@@ -16,7 +16,6 @@ import cosmic.com.pkwprj.model.Office
 import cosmic.com.pkwprj.model.OfficeList
 import cosmic.com.pkwprj.presenter.SecondPresenter
 import kotlinx.android.synthetic.main.activity_ui.*
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,6 +31,7 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
 
     internal lateinit var secondPresenter: SecondPresenter
     internal lateinit var adapter: ProgressAdapter
+    private val mResources: Resources? = null
 
     private val currentTime: String
         get() {
@@ -65,8 +65,7 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
 //        var getTime="1140"    //test시간
         var adjustTime=avaibleTimeCheck(getTime)
 
-        //        list=secondPresenter.newgetJsonString(adjustTime);//조정된 시간 넣어주기
-        newgetJsonString()//조정된 시간 넣어주기
+        list=secondPresenter.newgetJsonString(adjustTime,resources);//조정된 시간 넣어주기
         showOfficeTimeTable(adjustTime)
 
     }
@@ -99,7 +98,8 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
                     val a = secondPresenter.processConvert1(startTime)
                     val b = secondPresenter.processConvert2(endTime!!)
 
-                    MakeMapData(a, b, name)
+                    Log.i(TAG,"a, b= "+a+", "+b)
+                    secondPresenter.MakeMapData(a, b, name)
                 } else if (compare2 >= 1800) {
                     tv_office1.visibility = View.GONE
                     tv_office2.visibility = View.GONE
@@ -149,63 +149,13 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
         return adjustTime
     }
 
-    fun newgetJsonString() {
-
-//        list = ArrayList()
-
-        try {
-
-            val assetManager=resources.assets
-            val inputStrem = assetManager!!.open("MUSINSA.json")
-            val jsonString = inputStrem?.bufferedReader().use { it?.readText() }
-            val gson = Gson()
-            officeList = gson.fromJson(jsonString, OfficeList::class.java)
-
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        }
-
-        if (officeList != null) {
-
-            for (i in officeList!!.musinsa.indices) {
-
-                val office = officeList!!.musinsa.get(i)
-                val name = office.name
-                val location = office.location
-                val reservations = office.reservations
-                val timeBar = ProgressDrawable(map, name)
-                list.add(Office(name, location, reservations, timeBar))
-            }
-        }
-
-    }
-
-
-    private fun MakeMapData(startPoint: Int, endPoint: Int, officeName: String?) {
-        var inputKey: String
-        for (l in list.indices) {
-            if (endPoint - startPoint == 1) {
-                inputKey = l.toString() + officeName
-                map[inputKey] = startPoint
-            } else if (endPoint - startPoint > 1) {
-                for (i in startPoint until endPoint) {
-                    inputKey = i.toString() + officeName
-                    map[inputKey] = i
-                }
-            }
-        }
-
-        showAvailableOfficeCode()
-        showList()
-    }
-
-    private fun showAvailableOfficeCode() {
+    override fun showAvailableOfficeCode() {
 
         convertedKey = secondPresenter.processConvert1(adjustTime)
 
     }
 
-    private fun showList() {
+    override fun showList() {
 
         var adapter = ProgressAdapter(this, list)
         recyclerView_office.setAdapter(adapter)

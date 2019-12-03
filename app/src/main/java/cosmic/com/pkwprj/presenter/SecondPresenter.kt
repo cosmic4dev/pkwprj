@@ -1,48 +1,75 @@
 package cosmic.com.pkwprj.presenter
 
+import android.content.res.Resources
+import android.util.Log
+import com.google.gson.Gson
 import cosmic.com.pkwprj.contract.SecondContract
 import cosmic.com.pkwprj.model.Office
 import cosmic.com.pkwprj.model.OfficeList
+import cosmic.com.pkwprj.view.ProgressDrawable
+import java.io.IOException
 import java.util.*
 
 class SecondPresenter(private val secondView:SecondContract.View): SecondContract.Presenter {
 
-
     internal lateinit var map: HashMap<String, Int>
     internal lateinit var list: ArrayList<Office>
-    internal lateinit var officeList: OfficeList
+    internal var officeList: OfficeList? = null
 
-//     override fun newgetJsonString():ArrayList<Office> {
-//
-//        list = ArrayList()
-//
-//        try {
-//
-//            val assetManager: AssetManager?=null
-//            val inputStrem = assetManager?.open("MUSINSA.json")
-//            val jsonString=inputStrem?.bufferedReader().use { it?.readText() }
-//            val gson = Gson()
-//            officeList = gson.fromJson(jsonString, OfficeList::class.java)
-//
-//        } catch (ex: IOException) {
-//            ex.printStackTrace()
-//        }
-//
-//        if (officeList != null) {
-//
-//            for (i in officeList!!.musinsa.indices) {
-//
-//                val office = officeList!!.musinsa.get(i)
-//                val name = office.name
-//                val location = office.location
-//                val reservations = office.reservations
-//                val timeBar = ProgressDrawable(map, name)
-//                list.add(Office(name, location, reservations, timeBar))
-//            }
-//        }
-//
-//        return list
-//    }
+     override fun newgetJsonString(time:String,resouce:Resources):ArrayList<Office> {
+
+        list = ArrayList()
+         map = HashMap()
+
+        try {
+            val assetManager=resouce.assets
+            val inputStrem = assetManager!!.open("MUSINSA.json")
+            val jsonString=inputStrem?.bufferedReader().use { it?.readText() }
+            val gson = Gson()
+            officeList = gson.fromJson(jsonString, OfficeList::class.java)
+
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+        }
+
+        if (officeList != null) {
+
+            for (i in officeList!!.musinsa.indices) {
+
+                val office = officeList!!.musinsa.get(i)
+                val name = office.name
+                val location = office.location
+                val reservations = office.reservations
+                val timeBar = ProgressDrawable(map, name)
+
+                Log.i("TAG","담기나?"+office+", "+name+", "+timeBar)
+                list.add(Office(name, location, reservations, timeBar))
+            }
+        }
+
+         Log.i("TAG","list??="+list.size)
+        return list
+    }
+
+     override fun MakeMapData(startPoint: Int, endPoint: Int, officeName: String?) {
+        var inputKey: String
+        for (l in list.indices) {
+            if (endPoint - startPoint == 1) {
+                inputKey = l.toString() + officeName
+                map[inputKey] = startPoint
+            } else if (endPoint - startPoint > 1) {
+                for (i in startPoint until endPoint) {
+                    inputKey = i.toString() + officeName
+                    map[inputKey] = i
+                }
+            }
+        }
+
+        secondView.showAvailableOfficeCode()
+        secondView.showList()
+    }
+
+
 
     override fun processConvert2(endTime: String): Int {
         var code2 = -1
