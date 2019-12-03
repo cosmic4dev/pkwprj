@@ -52,11 +52,11 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        list = ArrayList()
+//        list = ArrayList()
         secondPresenter = SecondPresenter(this)
 
-        map = HashMap()
-        drawables = ArrayList()
+//        map = HashMap()
+//        drawables = ArrayList()
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView_office)
         recyclerView.layoutManager = LinearLayoutManager(this)

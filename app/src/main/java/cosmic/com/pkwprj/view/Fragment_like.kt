@@ -11,11 +11,16 @@ import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.adapter.DataAdapter2
 import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.model.DbHelper
+import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.model.GithubOwner
 import cosmic.com.pkwprj.presenter.MainPresenter
 
 
 class Fragment_like: Fragment(),MainContract.view {
+    override fun sendToAdapter(data: GitHubResult) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun showToast(msg: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

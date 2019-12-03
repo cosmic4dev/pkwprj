@@ -75,7 +75,19 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
             }
         }
 
+        fun checkLike(userName: String) {
+            val dbHelper = DbHelper(context, "HUB.db", null, 1)
+            val getdata = dbHelper.getData(userName)
+
+            if (getdata == userName) {
+                holder.saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)
+                isLike = true
+            }
+        }
+        checkLike(name)
     }
+
+
 
     private fun cancleLike(name: String) {
         val dbHelper = DbHelper(context, "HUB.db", null, 1)
@@ -105,19 +117,9 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
             this.tv_score = itemView.findViewById(R.id.repo_score)
             this.saveBtn = itemView.findViewById(R.id.saveBtn)
             this.tv_html = itemView.findViewById(R.id.repo_html)
-
-            checkLike(userName)
+            
 
         }
 
-        fun checkLike(userName: String) {
-            val dbHelper = DbHelper(context, "HUB.db", null, 1)
-            val getdata = dbHelper.getData(userName)
-
-            if (getdata == userName) {
-                saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)
-                isLike = true
-            }
-        }
     }
 }

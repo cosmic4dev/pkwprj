@@ -15,6 +15,7 @@ import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.model.GitHubResult
+import cosmic.com.pkwprj.presenter.MainPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -23,12 +24,16 @@ import kotlinx.android.synthetic.main.fragment_search.*
 class Fragment_search: Fragment(),MainContract.view {
 
     internal lateinit var recyclerView: RecyclerView
+    internal lateinit var mainPresenter:MainPresenter
 
     lateinit var searchUserName:String
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(cosmic.com.pkwprj.R.layout.fragment_search, container, false)
+
+        mainPresenter=MainPresenter(this)
 
         recyclerView=rootView.findViewById(cosmic.com.pkwprj.R.id.recyclerView_search1)
         val layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
@@ -43,6 +48,7 @@ class Fragment_search: Fragment(),MainContract.view {
         inputText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchUserName=inputText.text.toString()
+//                mainPresenter.searchData(searchUserName)
                 searchData(searchUserName)
                 true
             } else {
@@ -52,6 +58,7 @@ class Fragment_search: Fragment(),MainContract.view {
 
         searchBtn.setOnClickListener {
             searchUserName=inputText.text.toString()
+//            mainPresenter.searchData(searchUserName)
             searchData(searchUserName)
 
         }
@@ -85,7 +92,7 @@ class Fragment_search: Fragment(),MainContract.view {
     }
 
 
-    private fun sendToAdapter(dataList: GitHubResult) {
+    override fun sendToAdapter(dataList: GitHubResult) {
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = linearLayoutManager
         val adapter = DataAdapter(context,dataList,searchUserName)
