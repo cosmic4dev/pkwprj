@@ -13,14 +13,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cosmic.com.pkwprj.R
-import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.contract.MainContract
 import cosmic.com.pkwprj.databinding.ItemSearchBinding
 import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.presenter.MainPresenter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_search.*
 
 
@@ -53,8 +50,7 @@ class Fragment_search: Fragment(),MainContract.view {
         inputText?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 searchUserName=inputText.text.toString()
-//                mainPresenter.searchData(searchUserName)
-                searchData(searchUserName)
+                mainPresenter.searchData(searchUserName)
                 true
             } else {
                 false
@@ -63,36 +59,13 @@ class Fragment_search: Fragment(),MainContract.view {
 
         searchBtn.setOnClickListener {
             searchUserName=inputText.text.toString()
-//            mainPresenter.searchData(searchUserName)
-            searchData(searchUserName)
+            mainPresenter.searchData(searchUserName)
 
         }
 
         delButton.setOnClickListener{
             inputText.text.clear()
         }
-
-    }
-
-
-
-
-    fun searchData(searchUserName:String){
-
-        closeKeyboard()
-
-        if (searchUserName == null) {
-            showToast("검색어를 입력해주세요.")
-        }
-
-        val disposable = GithubClient().getApi().getUserInfo(searchUserName)
-             .subscribeOn(Schedulers.io())
-             .observeOn(AndroidSchedulers.mainThread())
-             .subscribe({
-                        data->sendToAdapter(data)
-             },{ error->
-                 error.printStackTrace()
-             })
 
     }
 

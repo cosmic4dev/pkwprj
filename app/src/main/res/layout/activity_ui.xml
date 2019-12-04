@@ -20,8 +20,8 @@
         <TextView
             android:id="@+id/tv_office1"
             style="@style/TextStyle6"
-            android:layout_width="81dp"
-            android:layout_height="37dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="56dp"
             android:layout_marginBottom="37dp"
@@ -54,7 +54,7 @@
             android:id="@+id/tv_office2"
             style="@style/TextStyle6"
             android:layout_width="wrap_content"
-            android:layout_height="37dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="56dp"
             android:background="#ffffff"
@@ -73,7 +73,7 @@
             android:id="@+id/tv_office3"
             style="@style/TextStyle6"
             android:layout_width="wrap_content"
-            android:layout_height="37dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginTop="56dp"
             android:background="#ffffff"
@@ -166,14 +166,16 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_office"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="158dp"
             android:layout_marginEnd="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            tools:listitem="@layout/item_office" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -281,7 +283,17 @@
             android:id="@+id/barrier7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:barrierDirection="left" />
+            app:barrierDirection="left"
+            tools:layout_editor_absoluteX="411dp" />
+
+        <TextView
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="17dp"
+            android:background="@color/deep_sky_blue"
+            app:layout_constraintBottom_toTopOf="@+id/recyclerView_office"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

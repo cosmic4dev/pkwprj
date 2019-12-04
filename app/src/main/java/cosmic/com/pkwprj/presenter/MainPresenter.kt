@@ -11,7 +11,7 @@ class MainPresenter(private val mainView: MainContract.view) : MainContract.pres
 
     override fun searchData(searchUserName: String) {
 
-        val disposable = GithubClient().getApi().getUserInfo(searchUserName)
+         GithubClient().getApi().getUserInfo(searchUserName)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({

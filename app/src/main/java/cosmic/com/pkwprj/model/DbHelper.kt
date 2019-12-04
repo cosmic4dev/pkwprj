@@ -3,7 +3,6 @@ package cosmic.com.pkwprj.model
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
 import java.util.*
 
 class DbHelper(
@@ -63,7 +62,6 @@ class DbHelper(
             val cursor = db.rawQuery("SELECT login FROM HUB WHERE login = '$name';", null)
             while (cursor.moveToNext()) {
                 result = cursor.getString(0)
-                Log.i(TAG,"커서: "+result)
             }
         } catch (e: Exception) {
 
