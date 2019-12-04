@@ -7,11 +7,13 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.adapter.ProgressAdapter
 import cosmic.com.pkwprj.contract.SecondContract
+import cosmic.com.pkwprj.databinding.ActivityUiBinding
 import cosmic.com.pkwprj.model.Office
 import cosmic.com.pkwprj.model.OfficeList
 import cosmic.com.pkwprj.presenter.SecondPresenter
@@ -42,10 +44,13 @@ class SecondActivity : AppCompatActivity(), SecondContract.View {
 
         }
 
+    lateinit var binding: ActivityUiBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ui)
+
+        binding= setContentView(this,R.layout.activity_ui)
+//        setContentView(R.layout.activity_ui)
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,

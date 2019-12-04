@@ -62,6 +62,12 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
             .override(100, 100)
             .into(target)
 
+        var getData=checkLike(name)
+        if (getData == name) {
+            holder.saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)
+            isLike = true
+        }
+
         holder.saveBtn.setOnClickListener {
             if (isLike == false) {
                 user=gitHubResult.items[position]
@@ -75,19 +81,21 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
             }
         }
 
-        fun checkLike(userName: String) {
-            val dbHelper = DbHelper(context, "HUB.db", null, 1)
-            val getdata = dbHelper.getData(userName)
 
-            if (getdata == userName) {
-                holder.saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)
-                isLike = true
-            }
-        }
-        checkLike(name)
+
     }
 
+    fun checkLike(userName: String):String {
+        val dbHelper = DbHelper(context, "HUB.db", null, 1)
+        val getdata = dbHelper.getData(userName)
 
+//        if (getdata == userName) {
+//            holder.saveBtn.setBackgroundResource(R.drawable.baseline_favorite_black_18dp)
+//            isLike = true
+//        }
+
+        return getdata
+    }
 
     private fun cancleLike(name: String) {
         val dbHelper = DbHelper(context, "HUB.db", null, 1)
@@ -117,7 +125,7 @@ class DataAdapter : RecyclerView.Adapter<DataAdapter.DataViewHolder> {
             this.tv_score = itemView.findViewById(R.id.repo_score)
             this.saveBtn = itemView.findViewById(R.id.saveBtn)
             this.tv_html = itemView.findViewById(R.id.repo_html)
-            
+
 
         }
 

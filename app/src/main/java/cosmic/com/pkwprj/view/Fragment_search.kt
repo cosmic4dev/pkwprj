@@ -8,12 +8,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cosmic.com.pkwprj.R
 import cosmic.com.pkwprj.Retrofit.GithubClient
 import cosmic.com.pkwprj.adapter.DataAdapter
 import cosmic.com.pkwprj.contract.MainContract
+import cosmic.com.pkwprj.databinding.ItemSearchBinding
 import cosmic.com.pkwprj.model.GitHubResult
 import cosmic.com.pkwprj.presenter.MainPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,11 +30,13 @@ class Fragment_search: Fragment(),MainContract.view {
     internal lateinit var mainPresenter:MainPresenter
 
     lateinit var searchUserName:String
-
+    lateinit var binding:ItemSearchBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(cosmic.com.pkwprj.R.layout.fragment_search, container, false)
+
+        binding=DataBindingUtil.inflate(inflater, R.layout.item_search,container,false)
+        val rootView = inflater.inflate(R.layout.fragment_search, container, false)
 
         mainPresenter=MainPresenter(this)
 

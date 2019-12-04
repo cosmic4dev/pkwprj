@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="office"
+            type="cosmic.com.pkwprj.model.Office" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -28,7 +36,6 @@
         android:layout_marginTop="89dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="36dp"
-
         app:layout_constraintBottom_toBottomOf="@+id/textView16"
         app:layout_constraintEnd_toEndOf="@+id/textView16"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
         android:layout_marginTop="8dp"
-        android:text="대회의실 1"
+        android:text="@{office.name}"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/textView16"
@@ -53,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:text="MUSINSA 1 / B1"
+        android:text="@{office.location}"
         android:textColor="@color/brown_grey"
         app:layout_constraintStart_toStartOf="@+id/textView16"
         app:layout_constraintTop_toBottomOf="@+id/tv_officeName" />
@@ -193,3 +200,4 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
